@@ -26,4 +26,5 @@ public:
 	UPROPERTY(EditAnywhere)
 	UShapeComponent* CollisionBox;
 
+	
 };

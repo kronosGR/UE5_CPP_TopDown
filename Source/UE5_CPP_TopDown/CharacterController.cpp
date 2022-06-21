@@ -3,13 +3,22 @@
 
 #include "CharacterController.h"
 
+#include "Food.h"
+#include "Components/BoxComponent.h"
+#include "GameFramework/Character.h"
+
 // Sets default values
 ACharacterController::ACharacterController()
 {
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	AutoPossessPlayer = EAutoReceiveInput::Player0;	
+	AutoPossessPlayer = EAutoReceiveInput::Player0;
+	CollisionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("Root"));
+
+	// process overlap collisions
+	CollisionBox->SetGenerateOverlapEvents(true);
+	CollisionBox->OnComponentBeginOverlap.AddDynamic(this, &ACharacterController::OnOverlap);
 }
 
 // Called when the game starts or when spawned
@@ -48,5 +57,14 @@ void ACharacterController::MoveHorizontally(float AxisValue)
 void ACharacterController::MoveVertically(float AxisValue)
 {
 	CurrentVelocity.Y = FMath::Clamp(AxisValue, -1.0f, 1.0f)* 100.0f;
+}
+
+void ACharacterController::OnOverlap(UPrimitiveComponent* OverlapComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (OtherActor->IsA(AFood::StaticClass()))
+	{
+		OtherActor->Destroy();
+	}
 }
 

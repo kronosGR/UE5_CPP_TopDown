@@ -29,9 +29,15 @@ public:
 	UPROPERTY(EditAnywhere)
 	float Speed = 10;
 
+	UPROPERTY(EditAnywhere)
+	UShapeComponent* CollisionBox;
+
 	FVector CurrentVelocity;
 
 	void MoveHorizontally(float AxisValue);
 	void MoveVertically(float AxisValue);
 
+	UFUNCTION()
+	void OnOverlap(UPrimitiveComponent* OverlapComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep,
+		const FHitResult& SweepResult);
 };
